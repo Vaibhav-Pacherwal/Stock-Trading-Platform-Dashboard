@@ -42,7 +42,7 @@ It allows users to monitor market indices, view holdings, check portfolio balanc
 
 ---
 
-### 🖼️ Screenshot / Preview
+### 🖼️ Preview
 
 ![Dashboard Preview](./public/image.png)
 
