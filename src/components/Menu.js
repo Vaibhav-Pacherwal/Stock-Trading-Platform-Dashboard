@@ -1,9 +1,40 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import axios from "axios"
 import { Link } from "react-router-dom"
 
 export default function Menu() {
-    let [selectedMenu,setSelectedMenu] = useState(0)
-    let [isProfileSelected,setIsProfileSelected] = useState(false)
+    let [selectedMenu, setSelectedMenu] = useState(0)
+    let [isProfileSelected, setIsProfileSelected] = useState(false)
+
+    let [userInfo, setUserInfo] = useState({})
+
+    useEffect(() => {
+        async function fetchInfo() {
+            try {
+                let res = await axios.get("http://localhost:8080/me", {
+                    withCredentials: true
+                })
+                console.log(res.data)
+                setUserInfo(res.data.user)
+            } catch (err) {
+                console.error(err)
+            }
+        }
+        fetchInfo()
+    }, [])
+
+    function getInitials() {
+        if (!userInfo || !userInfo.username) return "";
+
+        const nameParts = userInfo.username.trim().split(" ");
+        let initials = nameParts[0][0];
+
+        if (nameParts.length > 1) {
+            initials += nameParts[1][0];
+        }
+
+        return initials.toUpperCase();
+    }
 
     let handleMenuClick = (index) => {
         setSelectedMenu(index)
@@ -22,58 +53,57 @@ export default function Menu() {
             <div className="menus">
                 <ul>
                     <li className="mt-4">
-                        <Link 
-                          style={{textDecoration:"none"}} 
-                          to="/" onClick={()=>handleMenuClick(0)}
+                        <Link
+                            style={{ textDecoration: "none" }}
+                            to="/" onClick={() => handleMenuClick(0)}
                         >
                             <p className={selectedMenu === 0 ? activeMenuClass : menuClass}>Dashboard</p>
                         </Link>
                     </li>
                     <li>
-                        <Link 
-                          style={{textDecoration:"none"}} 
-                          to="/orders" onClick={()=>handleMenuClick(1)}
+                        <Link
+                            style={{ textDecoration: "none" }}
+                            to="/orders" onClick={() => handleMenuClick(1)}
                         >
                             <p className={selectedMenu === 1 ? activeMenuClass : menuClass}>Orders</p>
                         </Link>
                     </li>
                     <li>
-                        <Link 
-                          style={{textDecoration:"none"}} 
-                          to="/holdings" onClick={()=>handleMenuClick(2)}
+                        <Link
+                            style={{ textDecoration: "none" }}
+                            to="/holdings" onClick={() => handleMenuClick(2)}
                         >
                             <p className={selectedMenu === 2 ? activeMenuClass : menuClass}>Holdings</p>
                         </Link>
                     </li>
                     <li>
-                        <Link 
-                          style={{textDecoration:"none"}} 
-                          to="/positions" onClick={()=>handleMenuClick(3)}
+                        <Link
+                            style={{ textDecoration: "none" }}
+                            to="/positions" onClick={() => handleMenuClick(3)}
                         >
                             <p className={selectedMenu === 3 ? activeMenuClass : menuClass}>Positions</p>
                         </Link>
                     </li>
                     <li>
-                        <Link 
-                          style={{textDecoration:"none"}} 
-                          to="/funds" onClick={()=>handleMenuClick(4)}
+                        <Link
+                            style={{ textDecoration: "none" }}
+                            to="/funds" onClick={() => handleMenuClick(4)}
                         >
                             <p className={selectedMenu === 4 ? activeMenuClass : menuClass}>Funds</p>
                         </Link>
                     </li>
                     <li>
-                        <Link 
-                          style={{textDecoration:"none"}} 
-                          to="/apps" onClick={()=>handleMenuClick(5)}
+                        <Link
+                            style={{ textDecoration: "none" }}
+                            to="/apps" onClick={() => handleMenuClick(5)}
                         >
                             <p className={selectedMenu === 5 ? activeMenuClass : menuClass}>Apps</p>
                         </Link>
                     </li>
                 </ul>
-                <hr style={{transform: "rotate(90deg"}}/>
+                <hr style={{ transform: "rotate(90deg" }} />
                 <div className="profile" onClick={handleProfileClick}>
-                    <div className="avatar mb-1">ZU</div>
-                    <p className="username mt-2">USERID</p>
+                    <div className="avatar mb-1">{getInitials()}</div>
                 </div>
                 {isProfileSelected}
             </div>
